@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
@@ -49,7 +50,9 @@ Route::prefix('system')->middleware([
     Route::resource('activity', ActivityController::class)->except('create', 'show', 'edit', 'store', 'update');
     Route::post('activity/destroy-bulk', [ActivityController::class, 'destroyBulk'])->name('activity.destroy-bulk');
 
-    Route::resource('setting', SettingController::class)->except('create','store', 'show', 'edit','destory');
+    Route::resource('setting', SettingController::class)->except('create', 'store', 'show', 'edit', 'destory');
 
-    require __DIR__.'/jarvis.php';
+    Route::resource('product', ProductController::class)->except('create', 'show', 'edit');
+
+    require __DIR__ . '/jarvis.php';
 });

@@ -1,7 +1,7 @@
 <script setup>
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import {
-ClockIcon,
+    ClockIcon,
     Cog6ToothIcon,
     KeyIcon,
     ShieldCheckIcon,
@@ -26,7 +26,7 @@ import { Link } from "@inertiajs/vue3";
                 </p>
             </Link>
         </div>
-        <ol class="pb-24 pt-6 space-y-2">
+        <ol class="pb-24 pt-6 menu menu-lg">
             <li>
                 <span class="font-md uppercase font-semibold px-3">{{
                     lang().label.main_menu
