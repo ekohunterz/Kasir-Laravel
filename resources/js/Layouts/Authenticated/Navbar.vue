@@ -28,7 +28,7 @@ const logout = () => {
 </script>
 <template>
     <nav
-        class="bg-white fixed w-full md:pr-64 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700"
+        class="bg-white fixed w-full md:pr-64 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 z-10"
     >
         <!-- Primary Navigation Menu -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

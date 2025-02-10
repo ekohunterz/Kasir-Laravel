@@ -48,6 +48,22 @@ import { Link } from "@inertiajs/vue3";
                     <span>{{ lang().label.dashboard }}</span>
                 </Link>
             </li>
+            <li
+                v-bind:class="
+                    route().current('order.index')
+                        ? 'border-l-4 border-white font-semibold bg-white/20 dark:bg-primary/30'
+                        : ''
+                "
+                class="hover:bg-white/20 dark:hover:bg-primary/30"
+            >
+                <Link
+                    :href="route('order.index')"
+                    class="flex items-center py-1.5 px-3 space-x-2"
+                >
+                    <Squares2X2Icon class="w-5 h-auto" />
+                    <span>{{ lang().label.order }}</span>
+                </Link>
+            </li>
             <li v-show="can(['user read', 'role read', 'permission read'])">
                 <span class="font-md uppercase font-semibold px-3">{{
                     lang().label.access

@@ -22,7 +22,7 @@ class ProductFactory extends Factory
             'category_id' => \App\Models\Category::all()->random()->id,
             'description' => $this->faker->sentence(),
             'stock' => $this->faker->numberBetween(1, 100),
-            'image_path' => $this->faker->imageUrl(),
+
         ];
     }
 }

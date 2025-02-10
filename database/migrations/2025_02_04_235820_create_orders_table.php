@@ -13,14 +13,19 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('cashier_id')->nullable();
+            $table->foreign('cashier_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('customer_id');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->string('invoice_number')->unique();
-            $table->decimal('total_price', 10, 2);
-            $table->decimal('paid_nominal', 10, 2);
+            $table->bigInteger('sub_total')->default(0);
+            $table->bigInteger('cash')->default(0);;
+            $table->bigInteger('change')->default(0);;
+            $table->bigInteger('discount')->default(0);
+            $table->bigInteger('grand_total')->default(0);;
             $table->unsignedBigInteger('payment_id');
             $table->foreign('payment_id')->references('id')->on('payments')->onDelete('cascade');
-            $table->enum('paid_status', ['pending', 'completed', 'canceled']);
+            $table->boolean('already_paid')->default(false);
             $table->text('note')->nullable();
             $table->timestamps();
         });

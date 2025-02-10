@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RoleController;
@@ -53,6 +55,14 @@ Route::prefix('system')->middleware([
     Route::resource('setting', SettingController::class)->except('create', 'store', 'show', 'edit', 'destory');
 
     Route::resource('product', ProductController::class)->except('create', 'show', 'edit');
+    Route::post('product/destroy-bulk', [ProductController::class, 'destroyBulk'])->name('product.destroy-bulk');
+
+    Route::resource('order', OrderController::class)->except('create', 'show', 'edit');
+    Route::post('order/addToCart', [OrderController::class, 'addToCart'])->name('order.addToCart');
+    Route::post('editQuantity/{id}', [OrderController::class, 'editQuantity'])->name('order.edit-quantity');
+    Route::post('order/clearCart', [OrderController::class, 'clearCart'])->name('order.clear-cart');
+
+    Route::resource('customer', CustomerController::class)->except('create', 'show', 'edit');
 
     require __DIR__ . '/jarvis.php';
 });

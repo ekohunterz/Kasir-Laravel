@@ -25,6 +25,7 @@
         "@vueuse/core": "^9.13.0",
         "floating-vue": "^2.0.0-beta.20",
         "lodash": "^4.17.21",
+        "vue-currency-input": "^3.2.1",
         "vue-json-viewer": "^3.0.4",
         "vue3-lottie": "^2.7.0"
     }

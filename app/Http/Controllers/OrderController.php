@@ -2,33 +2,202 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Order\OrderStoreRequest;
+use App\Models\Cart;
+use App\Models\Customer;
 use App\Models\Order;
+use App\Models\Payment;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        // Get Products
+        $products = Product::query();
+
+        if ($request->has('search')) {
+            $products->where('name', 'LIKE', "%" . $request->search . "%");
+        }
+
+        if ($request->has(['field', 'order'])) {
+            $products->orderBy($request->field, $request->order);
+        }
+
+        $perPage = $request->has('perPage') ? $request->perPage : 12;
+
+        $carts = Cart::with('product:id,name,price,image_path')->where('cashier_id', auth()->id())->get();
+
+        $subtotal = Cart::where('cashier_id', auth()->id())->sum('price');
+
+        return Inertia::render('Order/Index', [
+            'title' => 'Orders',
+            'products' => $products->paginate($perPage)->onEachSide(0),
+            'filters'       => $request->all(['search', 'field', 'order']),
+            'perPage'       => (int) $perPage,
+            'carts' => $carts,
+            'subTotal' => (int) $subtotal,
+            'customers' => Customer::all(),
+            'payments' => Payment::all(),
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Add to cart.
      */
-    public function create()
+    public function addToCart(Request $request)
     {
-        //
+
+        DB::beginTransaction();
+        try {
+
+            //check stock product
+            if (Product::whereId($request->product_id)->first()->stock < $request->quantity) {
+
+                //redirect
+                return redirect()->back()->with('error', 'Out of Stock Product!.');
+            }
+
+            $cart = Cart::with('product')
+                ->where('product_id', $request->product_id)
+                ->where('cashier_id', auth()->id())
+                ->first();
+
+            if ($cart) {
+                // Increment quantity
+                $cart->increment('quantity');
+
+                // update Price
+                $cart->update([
+                    'price' => $cart->quantity * $cart->product->price
+                ]);
+            } else {
+                Cart::create([
+                    'product_id' => $request->product_id,
+                    'cashier_id' => auth()->id(),
+                    'quantity' => 1,
+                    'price' => $request->price,
+                ]);
+            }
+            DB::commit();
+            // return back()->with('success', __('app.label.created_successfully', ['name' => 'Cart']));
+            return back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function clearCart()
+    {
+        DB::beginTransaction();
+
+        try {
+            Cart::where('cashier_id', auth()->id())
+                ->delete();
+            DB::commit();
+
+            return back()->with('success', 'Product removed from cart successfully');
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function editQuantity(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $cart = Cart::with('product')->where('id', $id)->first(); // Eager load product
+
+            if (!$cart) {
+                return back()->with('error', 'Cart item not found.'); // Handle cart not found
+            }
+
+            if ($request->type == 'increment') {
+                if ($cart->product->stock <= $cart->quantity) { // Corrected stock check
+                    return back()->with('error', 'Out of Stock Product!.');
+                }
+                $cart->increment('quantity');
+            } elseif ($request->type == 'decrement') { // Explicitly check for decrement
+                if ($cart->quantity > 1) {
+                    $cart->decrement('quantity');
+                    $cart->update([
+                        'price' => $cart->quantity * $cart->product->price
+                    ]);
+                } else {
+                    $cart->delete();
+                }
+            } else {
+                return back()->with('error', 'Invalid request type.'); // Handle invalid request type
+            }
+
+            DB::commit();
+
+            return back();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', $e->getMessage()); // Log the exception for debugging
+        }
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(OrderStoreRequest $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $carts = Cart::where('cashier_id', auth()->id())->get();
+            $subtotal = Cart::where('cashier_id', auth()->id())->sum('price');
+
+            $order = Order::create([
+                'cashier_id' => auth()->id(),
+                'customer_id' => $request->customer_id,
+                'invoice_number' => 'INV/' . time(),
+                'sub_total' => $subtotal,
+                'grand_total' => $request->grand_total,
+                'cash' => $request->cash,
+                'change' => $request->cash - $request->grand_total,
+                'discount' => $request->discount ?? 0,
+                'payment_id' => $request->payment_id,
+                'already_paid' => $request->already_paid,
+                'note' => $request->note,
+            ]);
+
+            $order->orderDetails()->createMany($carts->map(function ($cart) {
+                return [
+                    'product_id' => $cart->product_id,
+                    'quantity' => $cart->quantity,
+                    'price' => $cart->price,
+                ];
+            })->toArray());
+
+            // Update stock product
+            foreach ($carts as $cart) {
+                $product = Product::whereId($cart->product_id)->first();
+                $product->update([
+                    'stock' => $product->stock - $cart->quantity
+                ]);
+            }
+
+            // Clear cart
+            Cart::where('cashier_id', auth()->id())->delete();
+            DB::commit();
+            return redirect()->route('order.index')->with('success', 'Order created successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
+        }
     }
 
     /**

@@ -19,6 +19,7 @@ class SettingSeeder extends Seeder
             'logo'          => null,
             'name'          => 'Cashier App',
             'short_name'    => 'C-APP',
+            'tax'           => 11,
             'Description'   => 'Cashier App is a simple web-based point of sale system.',
         ]);
     }
