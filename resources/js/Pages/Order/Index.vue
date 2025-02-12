@@ -1,22 +1,14 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
-import Table from "@/Components/Table.vue";
 import Breadcrumb from "@/Layouts/Authenticated/Breadcrumb.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
-import SelectInput from "@/Components/SelectInput.vue";
 import TablePagination from "@/Components/TablePagination.vue";
 import TextInput from "@/Components/TextInput.vue";
 import Create from "@/Pages/Order/Create.vue";
-import Edit from "@/Pages/Permission/Edit.vue";
-import Delete from "@/Pages/Permission/Delete.vue";
-import DeleteBulk from "@/Pages/Permission/DeleteBulk.vue";
-import { onMounted, onUpdated, reactive, Text, watch } from "vue";
+import { onMounted, reactive, watch } from "vue";
 import pkg from "lodash";
-import { router } from "@inertiajs/vue3";
-import { ChevronUpDownIcon, TrashIcon } from "@heroicons/vue/24/outline";
-import Checkbox from "@/Components/Checkbox.vue";
+import { router, useForm } from "@inertiajs/vue3";
+import { TrashIcon } from "@heroicons/vue/24/outline";
 import currencyFormat from "../../Helpers/CurrencyFormat";
 import CurrencyInput from "../../Components/CurrencyInput.vue";
 
@@ -31,6 +23,7 @@ const props = defineProps({
     subTotal: Number,
     customers: Object,
     payments: Object,
+    order: Object,
 });
 
 const data = reactive({
@@ -65,20 +58,21 @@ onMounted(() => {
     data.carts = props.carts;
 });
 
+const form = useForm({
+    product_id: null,
+});
+
 const addToCart = (id) => {
     let product = props.products.data.find((product) => product.id === id);
 
-    router.post(
-        route("order.addToCart", {
-            product_id: product.id,
-            price: product.price,
-        }),
-        {
-            replace: true,
-            preserveState: true,
-            preserveScroll: true,
-        }
-    );
+    form.product_id = product.id;
+
+    form.post(route("order.addToCart"), {
+        preserveScroll: true,
+        onSuccess: (resp) => {
+            console.log(resp);
+        },
+    });
 };
 
 const editQty = (id, type) => {
@@ -135,9 +129,14 @@ const clearCart = () => {
                                 <h2 class="card-title capitalize">
                                     {{ product.name }}
                                 </h2>
-                                <span>
-                                    {{ product.formated_price }}
-                                </span>
+                                <div class="flex justify-between items-center">
+                                    <span>{{ product.formated_price }}</span>
+                                    <span
+                                        v-if="product.stock < 1"
+                                        class="text-xs text-red-500"
+                                        >Out of stock!</span
+                                    >
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -153,7 +152,7 @@ const clearCart = () => {
                     class="flex-1 p-4 bg-white dark:bg-slate-800 overflow-hidden shadow sm:rounded"
                 >
                     <h2 class="text-lg">Order Lists</h2>
-                    <div class="mt-4" v-show="props.carts.length > 0">
+                    <div class="mt-4" v-if="props.carts.length > 0">
                         <ul
                             class="grid grid-cols-1 gap-2 max-h-96 overflow-y-auto"
                         >
@@ -269,20 +268,13 @@ const clearCart = () => {
                             />
                         </div>
                     </div>
+                    <div class="mt-4" v-else>
+                        <div class="flex justify-center items-center h-48">
+                            <span class="text-lg">No item in cart</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </AppLayout>
 </template>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.3 ease-in-out;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-</style>

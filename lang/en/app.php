@@ -156,6 +156,8 @@ return [
         'discount' => 'Discount',
         'transaction' => 'Transaction',
         'order' => 'Order',
+        'income' => 'Income',
+        'expense' => 'Expense',
     ],
     'placeholder' => [
         'email' => 'email@email.com',

@@ -4,6 +4,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProductController;
@@ -61,8 +62,12 @@ Route::prefix('system')->middleware([
     Route::post('order/addToCart', [OrderController::class, 'addToCart'])->name('order.addToCart');
     Route::post('editQuantity/{id}', [OrderController::class, 'editQuantity'])->name('order.edit-quantity');
     Route::post('order/clearCart', [OrderController::class, 'clearCart'])->name('order.clear-cart');
+    Route::get('order/print/{id}', [OrderController::class, 'print'])->name('order.print');
 
     Route::resource('customer', CustomerController::class)->except('create', 'show', 'edit');
+
+    Route::resource('income', IncomeController::class)->except('create', 'show', 'edit');
+    Route::post('income/destroy-bulk', [IncomeController::class, 'destroyBulk'])->name('income.destroy-bulk');
 
     require __DIR__ . '/jarvis.php';
 });

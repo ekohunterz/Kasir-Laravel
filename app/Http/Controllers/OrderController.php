@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Cart\CartStoreRequest;
 use App\Http\Requests\Order\OrderStoreRequest;
 use App\Models\Cart;
 use App\Models\Customer;
@@ -19,6 +20,7 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+
         // Get Products
         $products = Product::query();
 
@@ -51,17 +53,15 @@ class OrderController extends Controller
     /**
      * Add to cart.
      */
-    public function addToCart(Request $request)
+    public function addToCart(CartStoreRequest $request)
     {
 
         DB::beginTransaction();
         try {
+            $product = Product::find($request->product_id); // Use find for simpler lookup
 
-            //check stock product
-            if (Product::whereId($request->product_id)->first()->stock < $request->quantity) {
-
-                //redirect
-                return redirect()->back()->with('error', 'Out of Stock Product!.');
+            if (!$product) {
+                return back()->with('error', 'Product not found.'); // Handle product not found
             }
 
             $cart = Cart::with('product')
@@ -69,28 +69,34 @@ class OrderController extends Controller
                 ->where('cashier_id', auth()->id())
                 ->first();
 
-            if ($cart) {
-                // Increment quantity
-                $cart->increment('quantity');
+            // Check stock *before* any cart operations
+            if ($product->stock <= 0 || ($cart && $product->stock <= $cart->quantity)) { // Check if stock is 0 or less than or equal to current quantity
+                return back()->with('error', 'Out of Stock Product!.'); // Return error immediately
+            }
 
-                // update Price
-                $cart->update([
-                    'price' => $cart->quantity * $cart->product->price
-                ]);
+            if ($cart) {
+                // Update existing cart item
+                $cart->quantity++;
+                $cart->price = $cart->quantity * $product->price;
+                $cart->save();
             } else {
+                // Create new cart item
                 Cart::create([
-                    'product_id' => $request->product_id,
                     'cashier_id' => auth()->id(),
+                    'product_id' => $request->product_id,
                     'quantity' => 1,
-                    'price' => $request->price,
+                    'price' => $product->price,
                 ]);
             }
+
             DB::commit();
-            // return back()->with('success', __('app.label.created_successfully', ['name' => 'Cart']));
-            return back();
+
+            return back(); // Return 
+
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', $e->getMessage());
+
+            return back()->with('error', $e->getMessage()); // Return error message
         }
     }
 
@@ -193,11 +199,18 @@ class OrderController extends Controller
             // Clear cart
             Cart::where('cashier_id', auth()->id())->delete();
             DB::commit();
-            return redirect()->route('order.index')->with('success', 'Order created successfully');
+            return back()->with('success', 'Order created successfully')->with('data', ['order_id' => $order->id]);
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
+    }
+
+    public function print($order_id)
+    {
+        $order = Order::with(['orderDetails.product', 'customer'])->where('id', $order_id)->firstOrFail();
+
+        return view('invoice.print', compact('order'));
     }
 
     /**

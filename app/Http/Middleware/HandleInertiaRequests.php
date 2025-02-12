@@ -58,15 +58,16 @@ class HandleInertiaRequests extends Middleware
                     $lang = __('app');
                     return response()->json($lang);
                 },
-                'setting' => function(){
+                'setting' => function () {
                     return Setting::first();
                 },
             ],
             'flash' => [
-                'success' => fn () => $request->session()->get('success'),
-                'error' => fn () => $request->session()->get('error'),
-                'warning' => fn () => $request->session()->get('warning'),
-                'info' => fn () => $request->session()->get('info'),
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+                'warning' => fn() => $request->session()->get('warning'),
+                'info' => fn() => $request->session()->get('info'),
+                'data' => fn() => $request->session()->get('data'),
             ],
         ]);
     }

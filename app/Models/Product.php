@@ -29,11 +29,6 @@ class Product extends Model
         return $this->belongsToMany(Order::class);
     }
 
-    public function getStockAttribute($value)
-    {
-        return $value > 0 ? $value : 'Out of stock';
-    }
-
     public function getFormatedPriceAttribute()
     {
         return 'Rp. ' . number_format($this->price, 0, ',', '.');

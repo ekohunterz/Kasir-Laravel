@@ -44,7 +44,14 @@ const formCustomer = useForm({
 const submit = () => {
     form.post(route("order.store"), {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
+        onSuccess: (response) => {
+            closeModal();
+            // Assuming the response contains the order ID or invoice number:
+            const orderId = response.props.flash.data.order_id; // Or response.props.order.invoice_number
+
+            // Redirect to the invoice print route or open a new window
+            window.open(route("order.print", { id: orderId }), "_blank"); // Adjust route name as needed
+        },
         onError: () => null,
         onFinish: () => null,
     });
@@ -262,7 +269,7 @@ const payments = props.payments.map((payment) => {
                         />
                         <InputError :message="form.errors.payment" />
                     </div>
-                    <div class="grid grid-cols-2 gap-2">
+                    <div class="flex flex-wrap gap-2">
                         <div class="space-y-1">
                             <InputLabel for="cash" :value="lang().label.cash" />
                             <CurrencyInput
@@ -276,7 +283,7 @@ const payments = props.payments.map((payment) => {
                             />
                             <InputError :message="form.errors.cash" />
                         </div>
-                        <div class="space-y-1">
+                        <div class="flex-1 space-y-1">
                             <InputLabel
                                 for="change"
                                 :value="lang().label.change"
@@ -295,6 +302,32 @@ const payments = props.payments.map((payment) => {
                                 class="block w-full"
                                 :placeholder="lang().placeholder.change"
                             />
+                        </div>
+                        <div class="space-x-1">
+                            <button
+                                @click.prevent="form.cash += 10000"
+                                class="btn btn-outline btn-xs"
+                            >
+                                +10.000
+                            </button>
+                            <button
+                                @click.prevent="form.cash += 20000"
+                                class="btn btn-outline btn-xs"
+                            >
+                                +20.000
+                            </button>
+                            <button
+                                @click.prevent="form.cash += 50000"
+                                class="btn btn-outline btn-xs"
+                            >
+                                +50.000
+                            </button>
+                            <button
+                                @click.prevent="form.cash += 100000"
+                                class="btn btn-outline btn-xs"
+                            >
+                                +100.000
+                            </button>
                         </div>
                     </div>
 

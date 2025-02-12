@@ -13,6 +13,10 @@ class OrderDetail extends Model
         'price',
     ];
 
+    protected $appends = [
+        'formated_price'
+    ];
+
     public $timestamps = false;
 
     public function order()
@@ -23,5 +27,10 @@ class OrderDetail extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getFormatedPriceAttribute()
+    {
+        return 'Rp. ' . number_format($this->price, 0, ',', '.');
     }
 }
