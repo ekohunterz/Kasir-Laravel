@@ -158,7 +158,24 @@ return [
         'order' => 'Order',
         'income' => 'Income',
         'expense' => 'Expense',
+        'sub_total' => 'Sub Total',
+        'tax' => 'Tax',
+        'detail' => 'Detail',
+        'cashier' => 'Cashier',
+        'paid_status' => 'Paid Status',
+        'date' => 'Date',
+        'product_sold' => 'Product Sold',
+        'export' => 'Export',
+        'print' => 'Print',
+        'import' => 'Import',
+        'category' => 'Category',
+        'image' => 'Image',
+        'product_name' => 'Product Name',
+        'stock' => 'Stock',
+        'active' => 'Active',
+        'inactive' => 'Inactive'
     ],
+
     'placeholder' => [
         'email' => 'email@email.com',
         'password' => '••••••••',
@@ -183,6 +200,9 @@ return [
         'phone' => 'Phone',
         'address' => 'Address',
         'discount' => 'Discount',
+        'description' => 'Description',
+        'transaction' => 'Transaction',
+        'order' => 'Order'
     ],
     'button' => [
         'login' => 'Log In',
@@ -206,5 +226,8 @@ return [
         'show_recovery_codes' => 'Show Recovery Codes',
         'disable' => 'Disable,',
         'add' => 'Add',
+        'export' => 'Export',
+        'print' => 'Print',
+        'import' => 'Import'
     ],
 ];

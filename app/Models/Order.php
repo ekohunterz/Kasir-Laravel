@@ -17,7 +17,7 @@ class Order extends Model
         'change',
         'discount',
         'payment_id',
-        'paid_status',
+        'already_paid',
         'note',
     ];
 

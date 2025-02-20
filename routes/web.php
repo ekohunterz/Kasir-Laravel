@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GuestController;
@@ -57,6 +58,11 @@ Route::prefix('system')->middleware([
 
     Route::resource('product', ProductController::class)->except('create', 'show', 'edit');
     Route::post('product/destroy-bulk', [ProductController::class, 'destroyBulk'])->name('product.destroy-bulk');
+    Route::post('product/import', [ProductController::class, 'import'])->name('product.import');
+
+
+    Route::resource('category', CategoryController::class)->except('create', 'show', 'edit');
+    Route::post('category/destroy-bulk', [CategoryController::class, 'destroyBulk'])->name('category.destroy-bulk');
 
     Route::resource('order', OrderController::class)->except('create', 'show', 'edit');
     Route::post('order/addToCart', [OrderController::class, 'addToCart'])->name('order.addToCart');
@@ -65,9 +71,14 @@ Route::prefix('system')->middleware([
     Route::get('order/print/{id}', [OrderController::class, 'print'])->name('order.print');
 
     Route::resource('customer', CustomerController::class)->except('create', 'show', 'edit');
+    Route::post('customer/destroy-bulk', [CustomerController::class, 'destroyBulk'])->name('customer.destroy-bulk');
 
-    Route::resource('income', IncomeController::class)->except('create', 'show', 'edit');
+
+    Route::resource('income', IncomeController::class)->only('index', 'destroy');
     Route::post('income/destroy-bulk', [IncomeController::class, 'destroyBulk'])->name('income.destroy-bulk');
+    Route::get('income/export', [IncomeController::class, 'export'])->name('income.export');
+
+
 
     require __DIR__ . '/jarvis.php';
 });

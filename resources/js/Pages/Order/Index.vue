@@ -121,7 +121,7 @@ const clearCart = () => {
                         >
                             <figure>
                                 <img
-                                    :src="product.image_path"
+                                    :src="product.full_image_path"
                                     :alt="product.name"
                                 />
                             </figure>
@@ -171,7 +171,7 @@ const clearCart = () => {
                                     <figure>
                                         <img
                                             class="w-12 h-12 rounded-md"
-                                            :src="cart.product.image_path"
+                                            :src="cart.product.full_image_path"
                                             :alt="cart.product.name"
                                         />
                                     </figure>

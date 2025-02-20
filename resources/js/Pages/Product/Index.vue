@@ -4,35 +4,30 @@ import Table from "@/Components/Table.vue";
 import Breadcrumb from "@/Layouts/Authenticated/Breadcrumb.vue";
 import SelectInput from "@/Components/SelectInput.vue";
 import TablePagination from "@/Components/TablePagination.vue";
-import Detail from "@/Pages/Income/Detail.vue";
 import TextInput from "@/Components/TextInput.vue";
-import Edit from "@/Pages/Income/Edit.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import Delete from "@/Pages/Income/Delete.vue";
-import DeleteBulk from "@/Pages/Income/DeleteBulk.vue";
+import Create from "@/Pages/Product/Create.vue";
+import Edit from "@/Pages/Product/Edit.vue";
+import Delete from "@/Pages/Product/Delete.vue";
+import Import from "@/Pages/Product/Import.vue";
+import DeleteBulk from "@/Pages/Product/DeleteBulk.vue";
 import { reactive, watch } from "vue";
 import pkg from "lodash";
 import { router } from "@inertiajs/vue3";
 import {
-    ChartPieIcon,
     ChevronUpDownIcon,
-    CurrencyDollarIcon,
-    ShoppingBagIcon,
-    ArrowDownOnSquareIcon,
+    CheckBadgeIcon,
+    XCircleIcon,
 } from "@heroicons/vue/24/outline";
 import Checkbox from "@/Components/Checkbox.vue";
-import currencyFormat from "../../Helpers/CurrencyFormat";
 
 const { _, debounce, pickBy } = pkg;
 const props = defineProps({
     title: String,
     filters: Object,
-    transactions: Object,
+    products: Object,
     breadcrumbs: Object,
     perPage: Number,
-    total_income: Number,
-    total_transaction: Number,
-    products_sold: Number,
+    categories: Object,
 });
 
 const data = reactive({
@@ -41,12 +36,10 @@ const data = reactive({
         field: props.filters.field,
         order: props.filters.order,
         perPage: props.perPage,
-        date_start: props.filters.date_start,
-        date_end: props.filters.date_end,
     },
     selectedId: [],
     multipleSelect: false,
-    transaction: null,
+    product: null,
 });
 
 const order = (field) => {
@@ -58,7 +51,7 @@ watch(
     () => _.cloneDeep(data.params),
     debounce(() => {
         let params = pickBy(data.params);
-        router.get(route("income.index"), params, {
+        router.get(route("product.index"), params, {
             replace: true,
             preserveState: true,
             preserveScroll: true,
@@ -70,27 +63,17 @@ const selectAll = (event) => {
     if (event.target.checked === false) {
         data.selectedId = [];
     } else {
-        props.transactions?.data.forEach((transaction) => {
-            data.selectedId.push(transaction.id);
+        props.products?.data.forEach((product) => {
+            data.selectedId.push(product.id);
         });
     }
 };
 const select = () => {
-    if (props.transactions?.data.length == data.selectedId.length) {
+    if (props.products?.data.length == data.selectedId.length) {
         data.multipleSelect = true;
-        asd;
     } else {
         data.multipleSelect = false;
     }
-};
-
-const exportIncome = () => {
-    let params = pickBy(data.params);
-    window.open(
-        route("income.export", params),
-        "_blank",
-        "noopener,noreferrer"
-    );
 };
 </script>
 
@@ -106,71 +89,21 @@ const exportIncome = () => {
         <div class="py-6">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-4">
                 <div
-                    class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4"
-                >
-                    <div
-                        class="bg-white dark:bg-slate-800 overflow-hidden shadow sm:rounded text-slate-800 dark:text-slate-200 flex gap-4"
-                    >
-                        <div
-                            class="w-24 h-24 bg-sky-500 flex m-2 rounded justify-center items-center"
-                        >
-                            <CurrencyDollarIcon
-                                class="w-12 h-auto text-white"
-                            />
-                        </div>
-                        <div class="flex flex-col justify-center items-start">
-                            <p class="truncate font-semibold max-w-full">
-                                {{ lang().label.income }}
-                            </p>
-                            <p class="text-3xl font-semibold text-primary">
-                                {{ currencyFormat(props.total_income) }}
-                            </p>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-white dark:bg-slate-800 overflow-hidden shadow sm:rounded text-slate-800 dark:text-slate-200 flex gap-4"
-                    >
-                        <div
-                            class="w-24 h-24 bg-green-500 flex m-2 rounded justify-center items-center"
-                        >
-                            <ShoppingBagIcon class="w-12 h-auto text-white" />
-                        </div>
-                        <div class="flex flex-col justify-center items-start">
-                            <p class="truncate font-semibold max-w-full">
-                                {{ lang().label.transaction }}
-                            </p>
-                            <p class="text-3xl font-semibold text-primary">
-                                {{ props.total_transaction }}
-                            </p>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-white dark:bg-slate-800 overflow-hidden shadow sm:rounded text-slate-800 dark:text-slate-200 flex gap-4"
-                    >
-                        <div
-                            class="w-24 h-24 bg-teal-500 flex m-2 rounded justify-center items-center"
-                        >
-                            <ChartPieIcon class="w-12 h-auto text-white" />
-                        </div>
-                        <div class="flex flex-col justify-center items-start">
-                            <p class="truncate font-semibold max-w-full">
-                                {{ lang().label.product_sold }}
-                            </p>
-                            <p class="text-3xl font-semibold text-primary">
-                                {{ props.products_sold }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div
                     class="bg-white dark:bg-slate-800 overflow-hidden shadow sm:rounded"
                 >
                     <Table>
                         <template #table-action>
                             <div class="flex shrink-0 rounded overflow-hidden">
+                                <Create
+                                    v-show="can(['product create'])"
+                                    :title="props.title"
+                                    :categories="props.categories"
+                                />
                                 <DeleteBulk
-                                    v-show="data.selectedId.length != 0"
+                                    v-show="
+                                        data.selectedId.length != 0 &&
+                                        can(['product delete'])
+                                    "
                                     :selectedId="data.selectedId"
                                     :title="props.title"
                                     @close="
@@ -180,22 +113,20 @@ const exportIncome = () => {
                                 />
                             </div>
                             <div class="flex justify-end items-center gap-2">
-                                <PrimaryButton @click="exportIncome">
-                                    {{ lang().button.export }}
-                                </PrimaryButton>
-                                <div class="flex items-center space-x-2">
-                                    <TextInput
-                                        v-model="data.params.date_start"
-                                        type="date"
-                                        class="block h-9"
-                                        :placeholder="lang().placeholder.date"
+                                <div
+                                    class="flex shrink-0 rounded overflow-hidden"
+                                >
+                                    <Import
+                                        v-show="can(['product create'])"
+                                        :title="props.title"
                                     />
-                                    <span>-</span>
-                                    <TextInput
-                                        v-model="data.params.date_end"
-                                        type="date"
-                                        class="block h-9"
-                                        :placeholder="lang().placeholder.date"
+                                </div>
+
+                                <div class="flex space-x-2">
+                                    <SelectInput
+                                        class="h-9 text-sm"
+                                        v-model="data.params.perPage"
+                                        :dataSet="$page.props.app.perpage"
                                     />
                                 </div>
                                 <TextInput
@@ -204,13 +135,6 @@ const exportIncome = () => {
                                     class="block h-9"
                                     :placeholder="lang().placeholder.search"
                                 />
-                                <div class="flex space-x-2">
-                                    <SelectInput
-                                        class="h-9 text-sm"
-                                        v-model="data.params.perPage"
-                                        :dataSet="$page.props.app.perpage"
-                                    />
-                                </div>
                             </div>
                         </template>
                         <template #table-head>
@@ -224,18 +148,7 @@ const exportIncome = () => {
                                 <th class="p-4 text-center">#</th>
                                 <th
                                     class="p-4 cursor-pointer"
-                                    v-on:click="order('invoice_number')"
-                                >
-                                    <div
-                                        class="flex justify-between items-center"
-                                    >
-                                        <span>Invoice</span>
-                                        <ChevronUpDownIcon class="w-4 h-4" />
-                                    </div>
-                                </th>
-                                <th
-                                    class="p-4 cursor-pointer"
-                                    v-on:click="order('customer_name')"
+                                    v-on:click="order('name')"
                                 >
                                     <div
                                         class="flex justify-between items-center"
@@ -246,23 +159,43 @@ const exportIncome = () => {
                                 </th>
                                 <th
                                     class="p-4 cursor-pointer"
-                                    v-on:click="order('grand_total')"
+                                    v-on:click="order('price')"
                                 >
                                     <div
                                         class="flex justify-between items-center"
                                     >
-                                        <span>{{ lang().label.income }}</span>
+                                        <span>{{ lang().label.price }}</span>
                                         <ChevronUpDownIcon class="w-4 h-4" />
                                     </div>
                                 </th>
                                 <th
                                     class="p-4 cursor-pointer"
-                                    v-on:click="order('created_at')"
+                                    v-on:click="order('stock')"
                                 >
                                     <div
                                         class="flex justify-between items-center"
                                     >
-                                        <span>{{ lang().label.date }}</span>
+                                        <span>{{ lang().label.stock }}</span>
+                                        <ChevronUpDownIcon class="w-4 h-4" />
+                                    </div>
+                                </th>
+                                <th class="p-4 text-left">
+                                    {{ lang().label.description }}
+                                </th>
+                                <th class="p-4 text-left">
+                                    {{ lang().label.image }}
+                                </th>
+                                <th class="p-4 text-left">
+                                    {{ lang().label.category }}
+                                </th>
+                                <th
+                                    class="p-4 cursor-pointer"
+                                    v-on:click="order('is_active')"
+                                >
+                                    <div
+                                        class="flex justify-between items-center"
+                                    >
+                                        <span>{{ lang().label.active }}</span>
                                         <ChevronUpDownIcon class="w-4 h-4" />
                                     </div>
                                 </th>
@@ -271,9 +204,7 @@ const exportIncome = () => {
                         </template>
                         <template #table-body>
                             <tr
-                                v-for="(
-                                    transaction, index
-                                ) in transactions.data"
+                                v-for="(product, index) in products.data"
                                 :key="index"
                                 class="border-t border-slate-200 dark:border-slate-700 hover:bg-slate-200/30 hover:dark:bg-slate-900/20"
                             >
@@ -282,7 +213,7 @@ const exportIncome = () => {
                                         class="rounded dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-primary dark:text-primary shadow-sm focus:ring-primary/80 dark:focus:ring-primary dark:focus:ring-offset-slate-800 dark:checked:bg-primary dark:checked:border-primary"
                                         type="checkbox"
                                         @change="select"
-                                        :value="transaction.id"
+                                        :value="product.id"
                                         v-model="data.selectedId"
                                     />
                                 </td>
@@ -292,44 +223,63 @@ const exportIncome = () => {
                                     {{ ++index }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2">
-                                    {{ transaction.invoice_number }}
+                                    {{ product.name }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2">
-                                    {{ transaction.customer_name }}
+                                    {{ product.formated_price }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2">
-                                    {{ transaction.grand_total }}
+                                    {{ product.stock }}
+                                </td>
+                                <td class="whitespace-pre-wrap px-4 py-2">
+                                    {{ product.description ?? "-" }}
+                                </td>
+                                <td class="whitespace-nowrap mx-auto px-4 py-2">
+                                    <div
+                                        v-show="product.full_image_path"
+                                        class="mt-2 shrink-0"
+                                    >
+                                        <span
+                                            class="block rounded w-16 h-16 bg-cover bg-no-repeat bg-center"
+                                            :style="
+                                                'background-image: url(\'' +
+                                                product.full_image_path +
+                                                '\');'
+                                            "
+                                        />
+                                    </div>
+                                </td>
+                                <td class="whitespace-pre-wrap px-4 py-2">
+                                    {{ product.category?.name }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-2">
-                                    {{ transaction.created_at }}
+                                    <CheckBadgeIcon
+                                        v-tooltip="'Active'"
+                                        v-if="product.is_active"
+                                        class="w-6 h-auto text-blue-500 ml-1 shrink-0"
+                                    />
+                                    <XCircleIcon
+                                        v-tooltip="'Inactive'"
+                                        v-else
+                                        class="w-6 h-auto text-red-500 ml-1 shrink-0"
+                                    />
                                 </td>
-                                <td
-                                    class="whitespace-nowrap flex justify-end px-4 py-2"
-                                >
+                                <td class="whitespace-nowrap px-4 py-2">
                                     <div
                                         class="flex w-fit rounded overflow-hidden"
                                     >
-                                        <Detail
+                                        <Edit
+                                            v-show="can(['product update'])"
                                             :title="props.title"
-                                            :transaction="data.transaction"
-                                            @open="
-                                                data.transaction = transaction
-                                            "
+                                            :product="data.product"
+                                            :categories="props.categories"
+                                            @open="data.product = product"
                                         />
-
-                                        <!-- <Edit
-                                            :title="props.title"
-                                            :transaction="data.transaction"
-                                            @open="
-                                                data.transaction = transaction
-                                            "
-                                        /> -->
                                         <Delete
+                                            v-show="can(['product delete'])"
                                             :title="props.title"
-                                            :transaction="data.transaction"
-                                            @open="
-                                                data.transaction = transaction
-                                            "
+                                            :product="data.product"
+                                            @open="data.product = product"
                                         />
                                     </div>
                                 </td>
@@ -337,7 +287,7 @@ const exportIncome = () => {
                         </template>
                         <template #table-pagination>
                             <TablePagination
-                                :links="props.transactions"
+                                :links="props.products"
                                 :filters="data.params"
                             />
                         </template>

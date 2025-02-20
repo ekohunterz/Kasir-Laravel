@@ -22,7 +22,7 @@ class OrderController extends Controller
     {
 
         // Get Products
-        $products = Product::query();
+        $products = Product::query()->where('is_active', 1);
 
         if ($request->has('search')) {
             $products->where('name', 'LIKE', "%" . $request->search . "%");
@@ -134,6 +134,9 @@ class OrderController extends Controller
                     return back()->with('error', 'Out of Stock Product!.');
                 }
                 $cart->increment('quantity');
+                $cart->update([
+                    'price' => $cart->quantity * $cart->product->price
+                ]);
             } elseif ($request->type == 'decrement') { // Explicitly check for decrement
                 if ($cart->quantity > 1) {
                     $cart->decrement('quantity');
