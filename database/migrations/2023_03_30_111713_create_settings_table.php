@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('favicon')->nullable();
             $table->string('name');
             $table->string('short_name');
+            $table->string('shop_name');
+            $table->string('phone');
+            $table->string('address');
             $table->float('tax');
             $table->text('description');
             $table->timestamps();

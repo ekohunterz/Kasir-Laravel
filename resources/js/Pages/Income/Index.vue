@@ -6,7 +6,7 @@ import SelectInput from "@/Components/SelectInput.vue";
 import TablePagination from "@/Components/TablePagination.vue";
 import Detail from "@/Pages/Income/Detail.vue";
 import TextInput from "@/Components/TextInput.vue";
-import Edit from "@/Pages/Income/Edit.vue";
+import ProductIcon from "@/Components/Icons/ProductIcon.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import Delete from "@/Pages/Income/Delete.vue";
 import DeleteBulk from "@/Pages/Income/DeleteBulk.vue";
@@ -22,6 +22,7 @@ import {
 } from "@heroicons/vue/24/outline";
 import Checkbox from "@/Components/Checkbox.vue";
 import currencyFormat from "../../Helpers/CurrencyFormat";
+import StatsCard2 from "../../Components/StatsCard2.vue";
 
 const { _, debounce, pickBy } = pkg;
 const props = defineProps({
@@ -108,59 +109,36 @@ const exportIncome = () => {
                 <div
                     class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4"
                 >
-                    <div
-                        class="bg-white dark:bg-slate-800 overflow-hidden shadow sm:rounded text-slate-800 dark:text-slate-200 flex gap-4"
+                    <StatsCard2
+                        :title="lang().label.income"
+                        :value="currencyFormat(props.total_income)"
+                        color="bg-green-500"
                     >
-                        <div
-                            class="w-24 h-24 bg-sky-500 flex m-2 rounded justify-center items-center"
-                        >
+                        <template #icon>
                             <CurrencyDollarIcon
                                 class="w-12 h-auto text-white"
                             />
-                        </div>
-                        <div class="flex flex-col justify-center items-start">
-                            <p class="truncate font-semibold max-w-full">
-                                {{ lang().label.income }}
-                            </p>
-                            <p class="text-3xl font-semibold text-primary">
-                                {{ currencyFormat(props.total_income) }}
-                            </p>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-white dark:bg-slate-800 overflow-hidden shadow sm:rounded text-slate-800 dark:text-slate-200 flex gap-4"
+                        </template>
+                    </StatsCard2>
+
+                    <StatsCard2
+                        :title="lang().label.transaction"
+                        :value="props.total_transaction"
                     >
-                        <div
-                            class="w-24 h-24 bg-green-500 flex m-2 rounded justify-center items-center"
-                        >
+                        <template #icon>
                             <ShoppingBagIcon class="w-12 h-auto text-white" />
-                        </div>
-                        <div class="flex flex-col justify-center items-start">
-                            <p class="truncate font-semibold max-w-full">
-                                {{ lang().label.transaction }}
-                            </p>
-                            <p class="text-3xl font-semibold text-primary">
-                                {{ props.total_transaction }}
-                            </p>
-                        </div>
-                    </div>
-                    <div
-                        class="bg-white dark:bg-slate-800 overflow-hidden shadow sm:rounded text-slate-800 dark:text-slate-200 flex gap-4"
+                        </template>
+                    </StatsCard2>
+
+                    <StatsCard2
+                        :title="lang().label.product_sold"
+                        :value="props.products_sold"
+                        color="bg-orange-500"
                     >
-                        <div
-                            class="w-24 h-24 bg-teal-500 flex m-2 rounded justify-center items-center"
-                        >
-                            <ChartPieIcon class="w-12 h-auto text-white" />
-                        </div>
-                        <div class="flex flex-col justify-center items-start">
-                            <p class="truncate font-semibold max-w-full">
-                                {{ lang().label.product_sold }}
-                            </p>
-                            <p class="text-3xl font-semibold text-primary">
-                                {{ props.products_sold }}
-                            </p>
-                        </div>
-                    </div>
+                        <template #icon>
+                            <ProductIcon class="w-12 h-auto text-white" />
+                        </template>
+                    </StatsCard2>
                 </div>
 
                 <div
@@ -316,14 +294,6 @@ const exportIncome = () => {
                                                 data.transaction = transaction
                                             "
                                         />
-
-                                        <!-- <Edit
-                                            :title="props.title"
-                                            :transaction="data.transaction"
-                                            @open="
-                                                data.transaction = transaction
-                                            "
-                                        /> -->
                                         <Delete
                                             :title="props.title"
                                             :transaction="data.transaction"

@@ -17,8 +17,6 @@ class OrderDetail extends Model
         'formated_price'
     ];
 
-    public $timestamps = false;
-
     public function order()
     {
         return $this->belongsTo(Order::class);

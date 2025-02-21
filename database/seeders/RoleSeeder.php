@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,42 +18,32 @@ class RoleSeeder extends Seeder
             'name'          => 'superadmin',
             'guard_name'    => 'web',
         ]);
-        $superadmin->givePermissionTo([
-            'user delete',
-            'user update',
-            'user read',
-            'user create',
-            'role delete',
-            'role update',
-            'role read',
-            'role create',
-            'permission delete',
-            'permission update',
-            'permission read',
-            'permission create',
-            'setting read',
-            'activity read',
-            'activity delete',
-        ]);
-        $admin = Role::create([
-            'name'          => 'admin',
-            'guard_name'    => 'web',
-        ]);
-        $admin->givePermissionTo([
-            'user delete',
-            'user update',
-            'user read',
-            'user create',
-            'role read',
-            'permission read',
-        ]);
-        $user = Role::create([
-            'name'          => 'user',
-            'guard_name'    => 'web',
-        ]);
+        // Get all permissions
+        $permissions = Permission::all();
 
-        $user->givePermissionTo([
+        // Give all permissions to the superadmin role
+        $superadmin->syncPermissions($permissions);
+
+
+        $kasir = Role::create([
+            'name'          => 'kasir',
+            'guard_name'    => 'web',
+        ]);
+        $kasir->givePermissionTo([
             'user read',
+            'customer read',
+            'customer create',
+            'customer update',
+            'customer delete',
+            'product read',
+            'product create',
+            'product update',
+            'product delete',
+            'category read',
+            'invoice read',
+            'payment read',
+            'order create',
+            'report read',
         ]);
     }
 }

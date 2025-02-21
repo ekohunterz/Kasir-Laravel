@@ -167,11 +167,14 @@ const categories = props.categories.map((category) => {
                             <input
                                 type="checkbox"
                                 class="toggle toggle-success"
-                                v-model="form.is_active"
+                                :checked="form.is_active"
                                 id="is_active"
+                                @change="form.is_active = !form.is_active"
                             />
-                            <span v-if="form.is_active"> Yes </span>
-                            <span v-else> No </span>
+                            <label for="is_active">
+                                <span v-if="form.is_active"> Yes </span>
+                                <span v-else> No </span>
+                            </label>
                         </div>
 
                         <InputError :message="form.errors.is_active" />

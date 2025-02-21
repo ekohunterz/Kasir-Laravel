@@ -19,6 +19,9 @@ class SettingSeeder extends Seeder
             'logo'          => null,
             'name'          => 'Cashier App',
             'short_name'    => 'C-APP',
+            'shop_name'     => 'Waroeng Coffee',
+            'phone'         => '081234567890',
+            'address'       => 'Jl. Raya No. 1, Kota Baru',
             'tax'           => 11,
             'Description'   => 'Cashier App is a simple web-based point of sale system.',
         ]);

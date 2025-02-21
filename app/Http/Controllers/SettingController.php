@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SettingUpdateRequest;
 use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -56,7 +57,7 @@ class SettingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Setting $setting)
+    public function update(SettingUpdateRequest $request, Setting $setting)
     {
         try {
             if ($request->favicon != null) {
@@ -80,6 +81,10 @@ class SettingController extends Controller
                 'name'          => $request->name,
                 'short_name'    => $request->short_name,
                 'description'   => $request->description,
+                'address'       => $request->address,
+                'phone'         => $request->phone,
+                'shop_name'     => $request->shop_name,
+                'tax'           => $request->tax
             ]);
             return back();
         } catch (\Throwable $th) {

@@ -21,6 +21,10 @@ const form = useForm({
     name: props.setting?.name,
     short_name: props.setting?.short_name,
     description: props.setting?.description,
+    shop_name: props.setting?.shop_name,
+    phone: props.setting?.phone,
+    address: props.setting?.address,
+    tax: props.setting?.tax,
     _method: "PUT",
 });
 const update = () => {
@@ -137,6 +141,110 @@ const fileChange = (value) => {
                             />
                             <InputError
                                 :message="form.errors.description"
+                                class="mt-2"
+                            />
+                        </div>
+                    </template>
+
+                    <template #actions>
+                        <ActionMessage
+                            :on="form.recentlySuccessful"
+                            class="mr-3"
+                        >
+                            {{ lang().label.saved }}
+                        </ActionMessage>
+
+                        <PrimaryButton
+                            :class="{ 'opacity-25': form.processing }"
+                            :disabled="form.processing"
+                            @click="update"
+                        >
+                            {{ lang().button.save }}
+                            {{ form.processing ? "..." : "" }}
+                        </PrimaryButton>
+                    </template>
+                </FormSection>
+                <FormSection class="mt-10">
+                    <template #title>
+                        {{ lang().label.shop_setting }}
+                    </template>
+
+                    <template #description>
+                        {{ lang().label.shop_setting_description }}
+                    </template>
+
+                    <template #form>
+                        <div class="col-span-6 sm:col-span-4">
+                            <InputLabel
+                                for="shop_name"
+                                :value="lang().label.shop_name"
+                            />
+                            <TextInput
+                                id="shop_name"
+                                v-model="form.shop_name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                :placeholder="lang().placeholder.shop_name"
+                                :error="form.errors.shop_name"
+                            />
+                            <InputError
+                                :message="form.errors.shop_name"
+                                class="mt-2"
+                            />
+                        </div>
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <InputLabel
+                                for="phone"
+                                :value="lang().label.phone"
+                            />
+                            <TextInput
+                                id="phone"
+                                v-model="form.phone"
+                                type="text"
+                                class="mt-1 block w-full"
+                                :placeholder="lang().placeholder.phone"
+                                :error="form.errors.phone"
+                            />
+                            <InputError
+                                :message="form.errors.phone"
+                                class="mt-2"
+                            />
+                        </div>
+
+                        <div class="col-span-6 sm:col-span-4">
+                            <InputLabel
+                                for="address"
+                                :value="lang().label.address"
+                            />
+                            <TextInput
+                                id="address"
+                                v-model="form.address"
+                                type="text"
+                                class="mt-1 block w-full"
+                                :placeholder="lang().placeholder.address"
+                                :error="form.errors.address"
+                            />
+                            <InputError
+                                :message="form.errors.address"
+                                class="mt-2"
+                            />
+                        </div>
+                        <div class="col-span-6 sm:col-span-4">
+                            <InputLabel
+                                for="tax"
+                                :value="lang().label.tax + ' (%)'"
+                            />
+                            <TextInput
+                                id="tax"
+                                v-model="form.tax"
+                                type="text"
+                                class="mt-1 block w-full"
+                                :placeholder="lang().placeholder.tax"
+                                :error="form.errors.tax"
+                            />
+                            <InputError
+                                :message="form.errors.tax"
                                 class="mt-2"
                             />
                         </div>

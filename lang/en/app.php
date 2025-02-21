@@ -173,7 +173,10 @@ return [
         'product_name' => 'Product Name',
         'stock' => 'Stock',
         'active' => 'Active',
-        'inactive' => 'Inactive'
+        'inactive' => 'Inactive',
+        'shop_name' => 'Shop Name',
+        'shop_setting' => 'Shop Setting',
+        'shop_setting_description' => 'Change your shop setting',
     ],
 
     'placeholder' => [
@@ -202,7 +205,10 @@ return [
         'discount' => 'Discount',
         'description' => 'Description',
         'transaction' => 'Transaction',
-        'order' => 'Order'
+        'order' => 'Order',
+        'shop_name' => 'Shop Name',
+
+
     ],
     'button' => [
         'login' => 'Log In',
