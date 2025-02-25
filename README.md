@@ -3,10 +3,10 @@
 # Screenshots
 
 <p align="center">
-![Screenshot 2025-02-25 at 14-40-27 Dashboard - Cashier App](https://github.com/user-attachments/assets/ba3e3312-b858-44ed-a7a9-54bff3b8545f)
-![Screenshot 2025-02-25 at 14-40-53 Income - Cashier App](https://github.com/user-attachments/assets/a23add7f-1eac-46ff-9472-355567be4342)
-![Screenshot 2025-02-25 at 14-41-03 Orders - Cashier App](https://github.com/user-attachments/assets/06979c9d-d050-4215-9e59-b0787c3f97ab)
-![Screenshot 2025-02-25 at 14-41-10 Product - Cashier App](https://github.com/user-attachments/assets/0d455ce8-e8b0-4f98-96e7-cc076da32aa3)
+<img src="https://github.com/user-attachments/assets/ba3e3312-b858-44ed-a7a9-54bff3b8545f" alt="Dashboard">
+<img src="https://github.com/user-attachments/assets/a23add7f-1eac-46ff-9472-355567be4342" alt="Income">
+<img src="https://github.com/user-attachments/assets/06979c9d-d050-4215-9e59-b0787c3f97ab" alt="Orders">
+<img src="https://github.com/user-attachments/assets/0d455ce8-e8b0-4f98-96e7-cc076da32aa3" alt="Products">
 
 </p>
 
