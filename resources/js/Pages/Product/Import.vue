@@ -3,7 +3,7 @@ import DialogModal from "@/Components/DialogModal.vue";
 import ActionButton from "@/Components/ActionButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import { useForm } from "@inertiajs/vue3";
+import { router, useForm } from "@inertiajs/vue3";
 import { ref } from "vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -26,6 +26,10 @@ const submit = () => {
         onError: () => null,
         onFinish: () => null,
     });
+};
+
+const template = () => {
+    window.open(route("product.template"), "_blank");
 };
 
 const closeModal = () => {
@@ -54,13 +58,18 @@ const closeModal = () => {
                         <input
                             id="file"
                             type="file"
-                            class="file-input w-full file-input-bordered"
+                            class="file-input file-input-sm w-full file-input-bordered bg-slate-100 dark:bg-slate-900"
                             @change="form.file = $event.target.files[0]"
                             :error="form.errors.file"
                         />
                         <InputError :message="form.errors.file" />
                     </div>
                 </form>
+                <div class="mt-4 rounded-md overflow-hidden w-fit">
+                    <ActionButton variant="warning" @click.prevent="template"
+                        >Download Template</ActionButton
+                    >
+                </div>
             </template>
 
             <template #footer>

@@ -11,6 +11,13 @@ use Inertia\Inertia;
 
 class SettingController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:setting read', ['only' => ['index', 'show']]);
+        $this->middleware('permission:setting update', ['only' => ['edit', 'update']]);
+    }
+
     /**
      * Display a listing of the resource.
      */

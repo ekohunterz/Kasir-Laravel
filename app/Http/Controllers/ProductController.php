@@ -17,6 +17,14 @@ use Maatwebsite\Excel\Validators\ValidationException;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:product create', ['only' => ['create', 'store', 'template', 'import']]);
+        $this->middleware('permission:product read', ['only' => ['index', 'show']]);
+        $this->middleware('permission:product update', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:product delete', ['only' => ['destroy', 'destroyBulk']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -45,7 +53,7 @@ class ProductController extends Controller
         return Inertia::render('Product/Index', [
             'title' => __('app.label.product'),
             'filters' => $request->all(['search', 'field', 'order']),
-            'perPage' => $perPage,
+            'perPage' => (int)$perPage,
             'products' => $products->with('category')->orderBy('created_at', 'desc')->paginate($perPage)->onEachSide(0),
             'breadcrumbs' => [
                 ['label' => __('app.label.product'), 'href' => route('product.index')]
@@ -116,18 +124,13 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function template()
     {
-        //
+
+        return Storage::download('public/template/template.csv');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
-    {
-        //
-    }
+
 
     /**
      * Update the specified resource in storage.

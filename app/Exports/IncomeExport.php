@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Order;
+use App\Models\Setting;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 
@@ -27,6 +28,7 @@ class IncomeExport implements FromView
         return view('exports.income', [
             'income' => $income->get(),
             'total_income' => $income->sum('grand_total'),
+            'setting' => Setting::first(),
         ]);
     }
 }

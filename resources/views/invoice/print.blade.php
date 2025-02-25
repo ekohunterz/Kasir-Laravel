@@ -102,10 +102,9 @@
 <body>
     <div class="receipt">
         <div class="header">
-            <p>KPRI - USAHA GOTONG ROYONG BANGUN</p>
-            <p>Komplek RSJ Dr. Radjiman</p>
-            <p>Wediodiningrat Lawang</p>
-            <p>Telp: (0341) 427457</p>
+            <p>{{ $setting->shop_name }}</p>
+            <p>{{ $setting->address }}</p>
+            <p>Telp: {{ $setting->phone }}</p>
         </div>
         <div class="dashed-line"></div>
         <div class="info">
@@ -148,7 +147,7 @@
                 <span class="text-right">{{$order->formated_discount}}</span>
             </div>
             <div class="item">
-                <span>PPN</span>
+                <span>PPN ({{ $setting->tax }}%)</span>
                 <span class="text-right">{{$order->tax }}</span>
             </div>
             <div class="item">

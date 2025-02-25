@@ -67,7 +67,7 @@ console.log(props.productsSold);
                     </StatsCard>
                 </div>
 
-                <div class="mt-6 flex flex-wrap gap-6">
+                <div class="mt-6 grid lg:grid-cols-2 md:grid-cols-1 gap-6">
                     <div
                         class="bg-white card dark:bg-slate-800 overflow-hidden shadow sm:rounded"
                     >
@@ -77,9 +77,15 @@ console.log(props.productsSold);
                             </template>
                             <template #table-head>
                                 <tr>
-                                    <th class="p-4">Image</th>
-                                    <th class="p-4">Product Name</th>
-                                    <th class="p-4">Quantity</th>
+                                    <th class="p-4 text-left">
+                                        {{ lang().label.image }}
+                                    </th>
+                                    <th class="p-4 text-left">
+                                        {{ lang().label.product_name }}
+                                    </th>
+                                    <th class="p-4">
+                                        {{ lang().label.quantity }}
+                                    </th>
                                 </tr>
                             </template>
                             <template #table-body>
@@ -118,9 +124,15 @@ console.log(props.productsSold);
                             </template>
                             <template #table-head>
                                 <tr>
-                                    <th class="p-4">Image</th>
-                                    <th class="p-4">Product Name</th>
-                                    <th class="p-4">Stock</th>
+                                    <th class="p-4 text-left">
+                                        {{ lang().label.image }}
+                                    </th>
+                                    <th class="p-4 text-left">
+                                        {{ lang().label.product_name }}
+                                    </th>
+                                    <th class="p-4">
+                                        {{ lang().label.quantity }}
+                                    </th>
                                     <th class="p-4">Status</th>
                                 </tr>
                             </template>
@@ -154,7 +166,7 @@ console.log(props.productsSold);
                                             class="badge badge-success text-white"
                                             v-if="product.quantity > 10"
                                         >
-                                            In Stock
+                                            {{ lang().label.in_stock }}
                                         </span>
                                         <span
                                             class="badge badge-warning text-white"
@@ -163,13 +175,15 @@ console.log(props.productsSold);
                                                 product.quantity < 10
                                             "
                                         >
-                                            Low Stock</span
+                                            {{ lang().label.low_stock }}</span
                                         >
                                         <span
                                             class="badge badge-error text-white"
                                             v-else
                                         >
-                                            Out of Stock</span
+                                            {{
+                                                lang().label.out_of_stock
+                                            }}</span
                                         >
                                     </td>
                                 </tr>

@@ -59,6 +59,7 @@ Route::prefix('system')->middleware([
     Route::resource('product', ProductController::class)->except('create', 'show', 'edit');
     Route::post('product/destroy-bulk', [ProductController::class, 'destroyBulk'])->name('product.destroy-bulk');
     Route::post('product/import', [ProductController::class, 'import'])->name('product.import');
+    Route::get('product/template', [ProductController::class, 'template'])->name('product.template');
 
 
     Route::resource('category', CategoryController::class)->except('create', 'show', 'edit');

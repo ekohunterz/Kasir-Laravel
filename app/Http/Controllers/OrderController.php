@@ -9,12 +9,19 @@ use App\Models\Customer;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class OrderController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:order create');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -212,39 +219,11 @@ class OrderController extends Controller
     public function print($order_id)
     {
         $order = Order::with(['orderDetails.product', 'customer'])->where('id', $order_id)->firstOrFail();
+        $setting = Setting::first();
 
-        return view('invoice.print', compact('order'));
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $order)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
-    {
-        //
+        return view('invoice.print', [
+            'order' => $order,
+            'setting' => $setting,
+        ]);
     }
 }

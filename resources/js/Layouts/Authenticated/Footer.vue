@@ -13,15 +13,7 @@
                         " v." +
                         $page.props.app.version
                     }}
-                    &copy; 2023-{{ new Date().getFullYear() }}.
-                    {{ lang().label.build_with }}
-                    <span class="text-rose-500">♥️</span> {{ lang().label.by }}
-                    <a
-                        class="text-primary font-semibold"
-                        target="_blank"
-                        href="https://erikwibowo.com"
-                        >Erik Wibowo</a
-                    >
+                    &copy; {{ new Date().getFullYear() }}.
                 </p>
             </div>
         </div>

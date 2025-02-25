@@ -12,7 +12,11 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class IncomeController extends Controller
 {
-
+    public function __construct()
+    {
+        $this->middleware('permission:invoice read', ['only' => ['index', 'export']]);
+        $this->middleware('permission:invoice delete', ['only' => ['destroy', 'destroyBulk']]);
+    }
 
     public function index(Request $request)
     {

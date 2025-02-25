@@ -14,6 +14,7 @@ use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
+
     public function index()
     {
 
@@ -50,6 +51,7 @@ class DashboardController extends Controller
         if ($transactions_yesterday > 0) {
             $percentage_change_transaction = (($transactions_today - $transactions_yesterday) / $transactions_yesterday) * 100;
         }
+
 
         $top_selling_products = OrderDetail::with('product:id,name,image_path')->selectRaw('product_id, sum(quantity) as total_quantity')
             ->groupBy('product_id')

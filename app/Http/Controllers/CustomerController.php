@@ -11,6 +11,13 @@ use Inertia\Inertia;
 
 class CustomerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:customer create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:customer read', ['only' => ['index', 'show']]);
+        $this->middleware('permission:customer update', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:customer delete', ['only' => ['destroy', 'destroyBulk']]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -59,22 +66,6 @@ class CustomerController extends Controller
             DB::rollBack();
             return back()->with('error', $e->getMessage());
         }
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Customer $customer)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Customer $customer)
-    {
-        //
     }
 
     /**

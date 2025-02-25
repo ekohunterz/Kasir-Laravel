@@ -177,6 +177,9 @@ return [
         'shop_name' => 'Shop Name',
         'shop_setting' => 'Shop Setting',
         'shop_setting_description' => 'Change your shop setting',
+        'in_stock' => 'In Stock',
+        'out_of_stock' => 'Out of Stock',
+        'low_stock' => 'Low Stock'
     ],
 
     'placeholder' => [

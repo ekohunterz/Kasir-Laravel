@@ -9,13 +9,13 @@
 <body>
     <div class="title" style="padding-bottom: 13px">
         <div style="text-align: center;text-transform: uppercase;font-size: 15px">
-            Yan Afriyoko
+            {{ $setting->shop_name }}
         </div>
         <div style="text-align: center">
-            Alamat: Desa Gedangalas, Kec. Gajah, Kab. Demak
+            Alamat: {{ $setting->address }}
         </div>
         <div style="text-align: center">
-            Telp: 0857-9087-9087
+            Telp: {{ $setting->phone }}
         </div>
     </div>
     <table style="width: 100%">

@@ -117,7 +117,7 @@ const clearCart = () => {
                             v-for="product in props.products.data"
                             :key="product.id"
                             @click="addToCart(product.id)"
-                            class="card card-compact bg-slate-200 dark:bg-base-200 w-48 shadow-md flex-auto hover:shadow-lg cursor-pointer transition-transform transform hover:scale-105"
+                            class="card card-compact rounded-md bg-slate-200 dark:bg-base-200 w-48 shadow-md flex-auto hover:shadow-lg cursor-pointer transition-transform transform hover:scale-105"
                         >
                             <figure>
                                 <img

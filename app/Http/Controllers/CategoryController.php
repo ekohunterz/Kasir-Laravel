@@ -13,6 +13,15 @@ use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('permission:category create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:category read', ['only' => ['index', 'show']]);
+        $this->middleware('permission:category update', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:category delete', ['only' => ['destroy', 'destroyBulk']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
